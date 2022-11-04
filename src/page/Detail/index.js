@@ -105,7 +105,7 @@ function Detail() {
   }
 
   const handleDeleteActivity = async (param) => {
-    const html = `<p data-cy="delete-&-alert">Apakah anda yakin menghapus List Item</p><p data-cy="modal-delete-cancel-button"><b data-cy=modal-delete-confirm-button>“${param?.title}”?</b></p>`
+    const html = `<p data-cy="delete-&-alert modal-delete">Apakah anda yakin menghapus List Item</p><p data-cy="modal-delete-cancel-button"><b data-cy=modal-delete-confirm-button>“${param?.title}”?</b></p>`
     await Swal.fire({
       iconHtml: `<svg width="68" height="61" viewBox="0 0 68 61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M34 44.5V44.535M34 23.5V30.5V23.5Z" stroke="#ED4C5C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -169,7 +169,7 @@ function Detail() {
               <input data-cy="todo-title" defaultValue={title} className={`bg-transparent text-3xl font-bold focus:outline-none focus:border focus:border-b-current`} onChange={(e) => setTitle(e.target.value)} onBlur={() => handleBlur()} autoFocus />
               : <span className="text-3xl font-bold">{title}</span>
             }
-            <button onClick={() => setFocus(true)}>
+            <button data-cy="todo-title" onClick={() => setFocus(true)}>
               <i className='ml-3 fa fa-pencil fa-2x text-gray-400 fa-lg hover:text-gray-300'></i>
             </button>
           </div>
@@ -177,10 +177,8 @@ function Detail() {
             <div className='flex'>
               <button data-cy="todo-sort-button" className='p-3 rounded-full outline outline-1 outline-gray-400 mr-3' onClick={() => setShowDD(true)}>
                 <img src={sortIcon} alt='sort' width={'25px'} />
-              </button>
-              <span data-cy="todo-add-button">
+              </button>\
                 <Button onClick={() => setShowAdd(true)}>+ Tambah</Button>
-              </span>
             </div>
             <Dropdown className='mt-2' sortby={sortby} setSortby={setSortby} visible={showDD} handleClose={() => setShowDD(false)} />
           </div>

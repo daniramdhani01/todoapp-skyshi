@@ -100,7 +100,7 @@ function LadningPage() {
           <Button onClick={() => addGroup().then(getGroup)}>+ Tambah</Button>
         </div>
 
-        <div data-cy="activity-item">
+        <div data-cy="">
           {groupList.length < 1 ?
             <div className='flex justify-center mt-20' data-cy="empty-state-dashboard">
               <img src={toAbsoluteUrl('/media/activity-empty-state.png')} width='600px' height='100%' alt="empty" />
@@ -110,11 +110,11 @@ function LadningPage() {
               {groupList.map((v, index) => {
                 return (
                   <div key={index} className='bg-white p-5 rounded-xl drop-shadow-md transition duration-150 ease-in-out'>
-                    <div className='font-bold h-52 overflow-auto cursor-pointer' onClick={() => navigate(`item-list/${v.id}`)}>
+                    <div data-cy="activity-item" className='font-bold h-52 overflow-auto cursor-pointer' onClick={() => navigate(`item-list/${v.id}`)}>
                       <span data-cy="activity-item-title" className='text-lg'>{v.title}</span>
                     </div>
                     <div className='flex justify-between items-center mt-3'>
-                      <span data-cy="activity-item-date]"  className='text-gray-400'>{moment(v.created_at).format(config.dateFormat)}</span>
+                      <span data-cy="activity-item-date"  className='text-gray-400'>{moment(v.created_at).format(config.dateFormat)}</span>
                       <button data-cy="activity-item-delete-button" onClick={() => deleteGroup(v).then(getGroup)}>
                         <i className='fa fa-trash text-gray-400 fa-lg cursor-pointer hover:text-gray-300'></i>
                       </button>
