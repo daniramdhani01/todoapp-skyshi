@@ -105,7 +105,7 @@ function Detail() {
   }
 
   const handleDeleteActivity = async (param) => {
-    const html = `<p>Apakah anda yakin menghapus List Item</p><p><b>“${param?.title}”?</b></p>`
+    const html = `<p data-cy="delete-&-alert">Apakah anda yakin menghapus List Item</p><p><b>“${param?.title}”?</b></p>`
     await Swal.fire({
       iconHtml: `<svg width="68" height="61" viewBox="0 0 68 61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M34 44.5V44.535M34 23.5V30.5V23.5Z" stroke="#ED4C5C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -159,8 +159,8 @@ function Detail() {
     <>
       <Header />
       <AddTodo visible={showAdd} handleClose={() => setShowAdd(false)} data={todo} setRefresh={setRefresh} />
-      <div className='container mx-auto pt-8 px-10 md:px-28'>
-        <div className="flex flex-wrap justify-between">
+      <div className='container mx-auto pt-8 px-10 md:px-28' data-cy="new-activity">
+        <div className="flex flex-wrap justify-between" data-cy="list-item">
           <div className='flex items-center'>
             <button className='cursor-pointer' onClick={() => navigate('/')}>
               <img src={back} alt='back' className='mr-5' />

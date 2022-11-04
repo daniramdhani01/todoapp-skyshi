@@ -101,11 +101,11 @@ function LadningPage() {
         </div>
 
         {groupList.length < 1 ?
-          <div className='flex justify-center mt-20'>
+          <div className='flex justify-center mt-20' data-cy="empty-state-dashboard">
             <img src={toAbsoluteUrl('/media/activity-empty-state.png')} width='600px' height='100%' alt="empty" />
           </div>
           :
-          <div className={`mt-10 grid grid-cols-1 md:grid-cols-4 gap-4`}>
+          <div className={`mt-10 grid grid-cols-1 md:grid-cols-4 gap-4`} data-cy="dashboard-activity">
             {groupList.map((v, index) => {
               return (
                 <div key={index} className='bg-white p-5 rounded-xl drop-shadow-md transition duration-150 ease-in-out'>

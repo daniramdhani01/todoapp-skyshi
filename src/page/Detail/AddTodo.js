@@ -69,7 +69,7 @@ console.log('dataa', data)
     console.log(formik.values);
     return (
         <Modal visible={visible} handleClose={handleClose} headerName='Tambah List Item' btn={<Button onClick={()=>formik.submitForm()} isLoading={formik.isLoading}>Simpan</Button>}>
-            <label className='flex flex-col'>
+            <label className='flex flex-col' data-cy="add-new">
                 <span className='mb-2 font-bold text-sm'>NAMA LIST ITEM</span>
                 <input
                     name='title'

@@ -5,9 +5,9 @@ function CheckBox(props) {
     //(e) => ''handleActive({ id: val.id, priority: val.priority, is_active: e.target.checked })
     return (
         <>
-            <input type="checkbox" name='active' className='' onChange={onChange} checked={!value}/>
+            <input type="checkbox" name='active' className='w-7' onChange={onChange} checked={!value}/>
             {children}
-            <span className={`${!value && 'line-through text-gray-400'}`}>{title}</span>
+            <span className={`text-lg ${!value && 'line-through text-gray-400'}`}>{title}</span>
         </>
     )
 }
