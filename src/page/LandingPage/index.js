@@ -111,10 +111,10 @@ function LadningPage() {
                 return (
                   <div key={index} className='bg-white p-5 rounded-xl drop-shadow-md transition duration-150 ease-in-out'>
                     <div className='font-bold h-52 overflow-auto cursor-pointer' onClick={() => navigate(`item-list/${v.id}`)}>
-                      <span className='text-lg'>{v.title}</span>
+                      <span data-cy="activity-item-title" className='text-lg'>{v.title}</span>
                     </div>
                     <div className='flex justify-between items-center mt-3'>
-                      <span className='text-gray-400'>{moment(v.created_at).format(config.dateFormat)}</span>
+                      <span data-cy="activity-item-date]"  className='text-gray-400'>{moment(v.created_at).format(config.dateFormat)}</span>
                       <button data-cy="activity-item-delete-button" onClick={() => deleteGroup(v).then(getGroup)}>
                         <i className='fa fa-trash text-gray-400 fa-lg cursor-pointer hover:text-gray-300'></i>
                       </button>
