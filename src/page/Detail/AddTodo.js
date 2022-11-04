@@ -68,10 +68,11 @@ console.log('dataa', data)
     // console.log(data)
     console.log(formik.values);
     return (
-        <Modal visible={visible} handleClose={handleClose} headerName='Tambah List Item' btn={<Button onClick={()=>formik.submitForm()} isLoading={formik.isLoading}>Simpan</Button>}>
+        <Modal visible={visible} handleClose={handleClose} headerName='Tambah List Item' btn={<span data-cy="modal-add-save-button"><Button onClick={()=>formik.submitForm()} isLoading={formik.isLoading}>Simpan</Button></span>}>
             <label className='flex flex-col' data-cy="add-new">
                 <span className='mb-2 font-bold text-sm'>NAMA LIST ITEM</span>
                 <input
+                data-cy="modal-add-name-input"
                     name='title'
                     type={'text'}
                     placeholder='Tambahkan nama list item'

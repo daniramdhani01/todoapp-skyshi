@@ -72,7 +72,7 @@ function LadningPage() {
                     <path d="M10 6V10" stroke="#00A790" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M10 14H10.01" stroke="#00A790" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <span style="margin-left:10px; font-weight:bold;">Activity berhasil dihapus</span>
+                    <span data-cy="modal-information" style="margin-left:10px; font-weight:bold;">Activity berhasil dihapus</span>
                   </div>
                   `,
             showConfirmButton: false,
@@ -96,33 +96,35 @@ function LadningPage() {
       <Header />
       <div className="container mx-auto pt-8 px-10 md:px-28">
         <div className="flex flex-wrap justify-between">
-          <span className="text-3xl font-bold">Activity</span>
+          <span className="text-3xl font-bold" data-cy="activity-title">Activity</span>
           <Button onClick={() => addGroup().then(getGroup)}>+ Tambah</Button>
         </div>
 
-        {groupList.length < 1 ?
-          <div className='flex justify-center mt-20' data-cy="empty-state-dashboard">
-            <img src={toAbsoluteUrl('/media/activity-empty-state.png')} width='600px' height='100%' alt="empty" />
-          </div>
-          :
-          <div className={`mt-10 grid grid-cols-1 md:grid-cols-4 gap-4`} data-cy="dashboard-activity">
-            {groupList.map((v, index) => {
-              return (
-                <div key={index} className='bg-white p-5 rounded-xl drop-shadow-md transition duration-150 ease-in-out'>
-                  <div className='font-bold h-52 overflow-auto cursor-pointer' onClick={() => navigate(`item-list/${v.id}`)}>
-                    <span className='text-lg'>{v.title}</span>
+        <div data-cy="activity-item">
+          {groupList.length < 1 ?
+            <div className='flex justify-center mt-20' data-cy="empty-state-dashboard">
+              <img src={toAbsoluteUrl('/media/activity-empty-state.png')} width='600px' height='100%' alt="empty" />
+            </div>
+            :
+            <div className={`mt-10 grid grid-cols-1 md:grid-cols-4 gap-4`} data-cy="dashboard-activity">
+              {groupList.map((v, index) => {
+                return (
+                  <div key={index} className='bg-white p-5 rounded-xl drop-shadow-md transition duration-150 ease-in-out'>
+                    <div className='font-bold h-52 overflow-auto cursor-pointer' onClick={() => navigate(`item-list/${v.id}`)}>
+                      <span className='text-lg'>{v.title}</span>
+                    </div>
+                    <div className='flex justify-between items-center mt-3'>
+                      <span className='text-gray-400'>{moment(v.created_at).format(config.dateFormat)}</span>
+                      <button data-cy="activity-item-delete-button" onClick={() => deleteGroup(v).then(getGroup)}>
+                        <i className='fa fa-trash text-gray-400 fa-lg cursor-pointer hover:text-gray-300'></i>
+                      </button>
+                    </div>
                   </div>
-                  <div className='flex justify-between items-center mt-3'>
-                    <span className='text-gray-400'>{moment(v.created_at).format(config.dateFormat)}</span>
-                    <button onClick={() => deleteGroup(v).then(getGroup)}>
-                      <i className='fa fa-trash text-gray-400 fa-lg cursor-pointer hover:text-gray-300'></i>
-                    </button>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        }
+                )
+              })}
+            </div>
+          }
+        </div>
       </div>
     </div>
   );

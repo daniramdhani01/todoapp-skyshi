@@ -100,12 +100,12 @@ function Detail() {
   }
 
   const handleBlur = async () => {
-      setFocus(false)
-      await API.patch(`activity-groups/${id}`, { title })
+    setFocus(false)
+    await API.patch(`activity-groups/${id}`, { title })
   }
 
   const handleDeleteActivity = async (param) => {
-    const html = `<p data-cy="delete-&-alert">Apakah anda yakin menghapus List Item</p><p><b>“${param?.title}”?</b></p>`
+    const html = `<p data-cy="delete-&-alert">Apakah anda yakin menghapus List Item</p><p data-cy="modal-delete-cancel-button"><b data-cy=modal-delete-confirm-button>“${param?.title}”?</b></p>`
     await Swal.fire({
       iconHtml: `<svg width="68" height="61" viewBox="0 0 68 61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M34 44.5V44.535M34 23.5V30.5V23.5Z" stroke="#ED4C5C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -166,25 +166,27 @@ function Detail() {
               <img src={back} alt='back' className='mr-5' />
             </button>
             {focus ?
-              <input defaultValue={title} className={`bg-transparent text-3xl font-bold focus:outline-none focus:border focus:border-b-current`} onChange={(e)=>setTitle(e.target.value)} onBlur={()=>handleBlur()} autoFocus />
-              :<span className="text-3xl font-bold">{title}</span> 
+              <input data-cy="todo-title" defaultValue={title} className={`bg-transparent text-3xl font-bold focus:outline-none focus:border focus:border-b-current`} onChange={(e) => setTitle(e.target.value)} onBlur={() => handleBlur()} autoFocus />
+              : <span className="text-3xl font-bold">{title}</span>
             }
-            <button onClick={()=>setFocus(true)}>
+            <button onClick={() => setFocus(true)}>
               <i className='ml-3 fa fa-pencil fa-2x text-gray-400 fa-lg hover:text-gray-300'></i>
             </button>
           </div>
           <div className=''>
             <div className='flex'>
-              <button className='p-3 rounded-full outline outline-1 outline-gray-400 mr-3' onClick={() => setShowDD(true)}>
+              <button data-cy="todo-sort-button" className='p-3 rounded-full outline outline-1 outline-gray-400 mr-3' onClick={() => setShowDD(true)}>
                 <img src={sortIcon} alt='sort' width={'25px'} />
               </button>
-              <Button onClick={() => setShowAdd(true)}>+ Tambah</Button>
+              <span data-cy="todo-add-button">
+                <Button onClick={() => setShowAdd(true)}>+ Tambah</Button>
+              </span>
             </div>
             <Dropdown className='mt-2' sortby={sortby} setSortby={setSortby} visible={showDD} handleClose={() => setShowDD(false)} />
           </div>
         </div>
 
-        <div className='flex mt-20 flex-col items-center'>
+        <div data-cy="activity-item" className='flex mt-20 flex-col items-center'>
 
           {group.todo_items?.length < 1 ?
             <img src={toAbsoluteUrl('/media/todo-empty-item.png')} width='500px' height='100%' alt="empty" />
@@ -205,7 +207,7 @@ function Detail() {
                     </button>
                   </div>
                   <div>
-                    <button onClick={() => {
+                    <button data-cy="todo-item-delete-button" onClick={() => {
                       handleDeleteActivity(val).then(getGroup)
                       // deleteTodo()
                     }}>

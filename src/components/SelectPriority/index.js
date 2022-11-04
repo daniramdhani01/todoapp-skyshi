@@ -56,7 +56,7 @@ const SelectPriority = (props) => {
     console.log('ori', priority.label)
     console.log('title', toTitleCase(priority.label))
     return (
-        <div ref={wrapperRef} className={`w-48 z-10 fixed bg-white outline outline-gray-300 border-current outline-1 shadow-xl rounded-b-md divide-y ${!visible && 'hidden'} ${className}`}>
+        <div data-cy="modal-add-priority-dropdown" ref={wrapperRef} className={`w-48 z-10 fixed bg-white outline outline-gray-300 border-current outline-1 shadow-xl rounded-b-md divide-y ${!visible && 'hidden'} ${className}`}>
             {sel.map((val, index) => {
                 return (
                     <div className='flex justify-between items-center py-2 px-3 cursor-pointer hover:bg-gray-200 active:bg-sky-400 active:text-white'

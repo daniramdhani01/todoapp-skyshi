@@ -48,7 +48,7 @@ const Dropdown = (props) => {
 
 
     return (
-        <div ref={wrapperRef} className={`w-60 bg-white outline outline-gray-300 outline-2 shadow-xl rounded-xl z-10 fixed divide-y border-current ${!visible && 'hidden'} ${className}`}>
+        <div data-cy="sort-selection" ref={wrapperRef} className={`w-60 bg-white outline outline-gray-300 outline-2 shadow-xl rounded-xl z-10 fixed divide-y border-current ${!visible && 'hidden'} ${className}`}>
             {sortlist.map((val, index) => {
                 return (
                     <div className='flex justify-between items-center p-4 cursor-pointer hover:bg-gray-200 active:bg-sky-400 active:text-white'
