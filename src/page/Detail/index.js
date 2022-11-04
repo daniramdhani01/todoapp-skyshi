@@ -10,11 +10,16 @@ import sortIcon from '../../icon/dual-arrow.svg'
 import Dropdown from '../../components/Dropdown'
 
 import AddTodo from './AddTodo'
+import CheckBox from '../../components/CheckBox'
 
 
 function Detail() {
   const navigate = useNavigate()
   const [refresh, setRefresh] = useState(null)
+  const [todo, setTodo] = useState(null)
+
+  const [focus, setFocus] = useState(false)
+  const [title, setTitle] = useState('')
 
   const [sortby, setSortby] = useState(null)
   const [showDD, setShowDD] = useState(false)
@@ -28,7 +33,43 @@ function Detail() {
     "created_at": "",
     "todo_items": []
   }])
+  const [todoList, setTodoList] = useState([{
+    "id": '',
+    "title": "",
+    "activity_group_id": '',
+    "is_active": '',
+    "priority": ""
+  }])
 
+  const handleSort = (props) => {
+    let todos = group?.todo_items
+    // eslint-disable-next-line default-case
+    switch (props) {
+      case 'Terbaru':
+        todos = todos.sort((a, b) => b.id - a.id)
+        break;
+      case 'Terlama':
+        todos = todos.sort((a, b) => a.id - b.id)
+        break;
+      case 'A-Z':
+        todos = todos.sort((a, b) => a.title.localeCompare(b.title))
+        console.log('A-Z!!')
+        break;
+      case 'Z-A':
+        todos = todos.sort((a, b) => b.title.localeCompare(a.title))
+        console.log('Z-A!!')
+        break;
+      case 'Belum Selesai':
+        todos = todos.sort((a, b) => a.is_active - b.is_active)
+        console.log('BELUM SELESAI!!')
+        break;
+    }
+    const data = {
+      ...group,
+      todo_items: todos
+    }
+    setGroup(data)
+  }
 
 
   const getGroup = async () => {
@@ -36,8 +77,9 @@ function Detail() {
       const res = await API.get(`activity-groups/${id}`)
       const data = res?.data
       setGroup(data)
+      setTitle(data.title)
     } catch (err) {
-      console.log(err)
+      navigate('/')
     }
   }
 
@@ -49,18 +91,22 @@ function Detail() {
     }
   }
 
-  const handleActive = async (props)=>{
+  const handleActive = async (props) => {
     try {
-      await API.patch(`todo-items/${props.id}`, props)
+      await API.patch(`todo-items/${props.id}`, { ...props, is_active: !props.is_active })
     } catch (err) {
       console.log(err)
     }
-    
   }
 
-  const handleDeleteActivity = (param) => {
-    const html = `<p>Apakah anda yakin menghapus activity</p><p><b>“${param}”?</b></p>`
-    Swal.fire({
+  const handleBlur = async () => {
+      setFocus(false)
+      await API.patch(`activity-groups/${id}`, { title })
+  }
+
+  const handleDeleteActivity = async (param) => {
+    const html = `<p>Apakah anda yakin menghapus List Item</p><p><b>“${param?.title}”?</b></p>`
+    await Swal.fire({
       iconHtml: `<svg width="68" height="61" viewBox="0 0 68 61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M34 44.5V44.535M34 23.5V30.5V23.5Z" stroke="#ED4C5C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       <path d="M9.50018 58.5012H58.5002C59.6423 58.4932 60.765 58.2059 61.7705 57.6643C62.7761 57.1227 63.6338 56.3433 64.2689 55.3941C64.904 54.4449 65.2972 53.3546 65.4142 52.2186C65.5312 51.0825 65.3685 49.935 64.9402 48.8762L40.0902 6.00125C39.4848 4.90714 38.5975 3.99515 37.5203 3.3601C36.4432 2.72504 35.2156 2.39011 33.9652 2.39011C32.7148 2.39011 31.4872 2.72504 30.41 3.3601C29.3329 3.99515 28.4455 4.90714 27.8402 6.00125L2.99018 48.8762C2.56997 49.9108 2.40334 51.0308 2.5042 52.1428C2.60506 53.2549 2.97048 54.3266 3.56996 55.2687C4.16943 56.2107 4.98556 56.9956 5.95022 57.558C6.91487 58.1203 8.00006 58.4438 9.11518 58.5012" stroke="#ED4C5C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -75,27 +121,57 @@ function Detail() {
       reverseButtons: true,
 
       customClass: {
-        icon: 'no-border'
+        icon: 'no-border',
+        cancelButton: "font-black",
+      }
+    }).then(async (res) => {
+      if (res.isConfirmed) {
+        try {
+          await API.delete(`/todo-items/${param.id}`)
+        } catch (err) {
+          console.log(err)
+        }
       }
     })
+
   }
+
 
   useEffect(() => {
     getGroup()
   }, [refresh])
 
+  useEffect(() => {
+    if (!showAdd) {
+      setTodo(null)
+    }
+  }, [showAdd])
+
+  useEffect(() => {
+    if (!!sortby) {
+      handleSort(sortby)
+    }
+  }, [sortby])
+
+  console.log('group', group)
+
   return (
     <>
       <Header />
-      <AddTodo visible={showAdd} handleClose={() => setShowAdd(false)} data={null} setRefresh={setRefresh}/>
+      <AddTodo visible={showAdd} handleClose={() => setShowAdd(false)} data={todo} setRefresh={setRefresh} />
       <div className='container mx-auto pt-8 px-10 md:px-28'>
         <div className="flex flex-wrap justify-between">
           <div className='flex items-center'>
             <button className='cursor-pointer' onClick={() => navigate('/')}>
               <img src={back} alt='back' className='mr-5' />
             </button>
-            <span className="text-3xl font-bold">{group?.title}</span>
-            <i className='ml-3 fa fa-pencil fa-2x text-gray-400 fa-lg cursor-pointer hover:text-gray-300'></i>
+            {focus ?
+              <input defaultValue={title} className={`bg-transparent text-3xl font-bold focus:outline-none focus:border focus:border-b-current`} onChange={(e)=>setTitle(e.target.value)} onBlur={()=>handleBlur()} autoFocus />
+              :<span className="text-3xl font-bold">{title}</span> 
+            }
+            <button onClick={()=>setFocus(true)}>
+              <i className='ml-3 fa fa-pencil fa-2x text-gray-400 fa-lg hover:text-gray-300'></i>
+            </button>
           </div>
           <div className=''>
             <div className='flex'>
@@ -113,19 +189,24 @@ function Detail() {
           {group.todo_items?.length < 1 ?
             <img src={toAbsoluteUrl('/media/todo-empty-item.png')} width='500px' height='100%' alt="empty" />
             :
-            group?.todo_items?.map((val, index)=>{
-            // [1].map((val, index) => {
+            group?.todo_items?.map((val, index) => {
+              // [1].map((val, index) => {
               return (
                 <div className='w-full p-8 rounded-xl bg-white flex justify-between shadow-md mb-3' key={index}>
                   <div className='flex'>
-                    <input type="checkbox" name='active' className='' onChange={(e) => handleActive({id:val.id, priority: val.priority, is_active: e.target.checked})} defaultChecked={val.is_active}/>
-                    <img src={priorityIcon(val.priority)} alt="priority" className='mx-3' />
-                    <span className={`${val.is_active && 'line-through text-gray-400'}`}>{val.title}</span>
-                    <i className='ml-3 fa fa-pencil text-gray-400 fa-lg cursor-pointer hover:text-gray-300'></i>
+                    <CheckBox value={val?.is_active} title={val?.title} onChange={(e) => handleActive({ id: val.id, priority: val.priority, is_active: e.target.checked }).then(getGroup)}>
+                      <img src={priorityIcon(val.priority)} alt="priority" className='mx-3' />
+                    </CheckBox>
+                    <button onClick={() => {
+                      setShowAdd(true)
+                      setTodo({ ...val, priority: { value: val.priority, label: val.priority } })
+                    }}>
+                      <i className='ml-3 fa fa-pencil text-gray-400 fa-lg cursor-pointer hover:text-gray-300'></i>
+                    </button>
                   </div>
                   <div>
                     <button onClick={() => {
-                      handleDeleteActivity('mandi')
+                      handleDeleteActivity(val).then(getGroup)
                       // deleteTodo()
                     }}>
                       <i className='fa fa-trash text-gray-400 fa-lg cursor-pointer hover:text-gray-300'></i>

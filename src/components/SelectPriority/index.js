@@ -1,4 +1,4 @@
-import {  useRef } from 'react'
+import { useRef } from 'react'
 import { useClickOutside } from '../../utils/useClickOutside'
 import veryHigh from '../../icon/priority/very-high.svg'
 import high from '../../icon/priority/high.svg'
@@ -7,6 +7,7 @@ import low from '../../icon/priority/low.svg'
 import veryLow from '../../icon/priority/very-low.svg'
 import check from '../../icon/sort/check.svg'
 import { priorityIcon } from '../../utils/priorityIcon'
+import { toTitleCase } from '../../utils'
 
 const SelectPriority = (props) => {
     const { className, priority, setPriority, visible, handleClose } = props
@@ -51,7 +52,9 @@ const SelectPriority = (props) => {
     if (i >= 0) {
         sel[i].selected = true
     }
-
+    console.log('================')
+    console.log('ori', priority.label)
+    console.log('title', toTitleCase(priority.label))
     return (
         <div ref={wrapperRef} className={`w-48 z-10 fixed bg-white outline outline-gray-300 border-current outline-1 shadow-xl rounded-b-md divide-y ${!visible && 'hidden'} ${className}`}>
             {sel.map((val, index) => {
@@ -59,7 +62,7 @@ const SelectPriority = (props) => {
                     <div className='flex justify-between items-center py-2 px-3 cursor-pointer hover:bg-gray-200 active:bg-sky-400 active:text-white'
                         key={index}
                         onClick={() => {
-                            setPriority((prev) => prev === val.value ? null : {value : val.value, label: val.label})
+                            setPriority((prev) => prev === val.value ? null : { value: val.value, label: toTitleCase(val.label) })
                             handleClose()
                         }}
                     >

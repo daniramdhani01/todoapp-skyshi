@@ -6,7 +6,7 @@ import { priorityIcon } from '../../utils/priorityIcon'
 import arrowDown from '../../icon/priority/arrow-down.svg'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import { API } from '../../utils'
+import { API, toTitleCase } from '../../utils'
 import { useParams } from 'react-router-dom'
 
 function AddTodo(props) {
@@ -25,16 +25,19 @@ function AddTodo(props) {
             priority: Yup.string().required(),
             title: Yup.string().required(),
         }),
-        enableReinitialize: true,
         initialValues: {
             activity_group_id: `${id}`,
-            priority: priority.value,
+            priority: '',
             title: '',
         },
         onSubmit: async (v) => {
             try {
                 console.log('adaa')
-                const res = await API.post('/todo-items',v)
+                if(!data){
+                    const res = await API.post('/todo-items',v)
+                }else{
+                    const res = await API.patch(`/todo-items/${data?.id}`,v) 
+                }
                 setRefresh((prev)=>!prev)
                 handleClose()
             } catch (err) {
@@ -42,7 +45,7 @@ function AddTodo(props) {
             }
         }
     })
-
+console.log('dataa', data)
     useEffect(() => {
         if(!visible){
             formik.resetForm()
@@ -51,24 +54,31 @@ function AddTodo(props) {
             setPriority(p)
         }
         if (data) {
-            setPriority(data)
+            setPriority(data?.priority)
+            formik.setFieldValue('title', data?.title)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, visible])
 
-    console.log(formik.errors);
+    useEffect(()=>{
+        if(priority?.value){
+            formik.setFieldValue('priority', priority?.value)
+        }
+    },[priority])
+    // console.log(data)
+    console.log(formik.values);
     return (
         <Modal visible={visible} handleClose={handleClose} headerName='Tambah List Item' btn={<Button onClick={()=>formik.submitForm()} isLoading={formik.isLoading}>Simpan</Button>}>
             <label className='flex flex-col'>
                 <span className='mb-2 font-bold text-sm'>NAMA LIST ITEM</span>
                 <input
-                    className='border rounded-md focus:outline-1 focus:outline-sky-400 p-3'
-                    placeholder='Tambahkan nama list item'
                     name='title'
                     type={'text'}
-                    value={formik.title}
+                    placeholder='Tambahkan nama list item'
+                    className='border rounded-md focus:outline-1 focus:outline-sky-400 p-3'
+                    value={formik.values.title}
                     onChange={formik.handleChange}
-                    onBlur={formik.setFieldTouched}
+                    onBlur={()=>formik.setFieldTouched('title', true)}
                 />
                 <span className='text-sm text-red-300'>{formik.errors.title}</span>
             </label>
@@ -83,7 +93,7 @@ function AddTodo(props) {
                             {showSelect ?
                                 <span className='ml-4'>Pilih priority</span>
                                 :
-                                <><img src={priorityIcon(priority.value)} alt='icon' width='10px' height='100%' className='mr-2' />  {priority.label} </>}
+                                <><img src={priorityIcon(priority.value)} alt='icon' width='10px' height='100%' className='mr-2' />  {toTitleCase(priority.label)} </>}
                         </div>
                         <img src={arrowDown} alt='select' className={`transition duration-300 ease-in-out ${showSelect && 'rotate-180'}`} />
                     </button>
